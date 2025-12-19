@@ -108,7 +108,7 @@ public final class ExecutableParser {
             executableConfig.put(GAME_EXE_BUILD, baseBuild);
             executableConfig.put(GAME_EXE_IS_64, exeFile.contains(X64_SUFFIX));
 
-            if (!isSet(customDataVersion)) {
+            if (!isSet(customDataVersion) && isSet(baseBuild)) {
                 Optional<GameVersion> gameVersion = Versions.versionFor(
                         Integer.parseInt(baseBuild.replaceFirst(BUILD_PREFIX, "")));
                 gameVersion.ifPresent(ver -> executableConfig.put(GAME_EXE_DATA_VER, ver.getDataHash()));
@@ -123,7 +123,8 @@ public final class ExecutableParser {
     }
 
     private static String getBaseBuildFromGameExePath(String gameExePath) {
-        String[] dirTree = gameExePath.split("\\\\");
+        // Handle both Windows (\) and Unix (/) path separators
+        String[] dirTree = gameExePath.replace('\\', '/').split("/");
         for (String dir : dirTree) {
             if (dir.startsWith("Base")) {
                 return dir;
