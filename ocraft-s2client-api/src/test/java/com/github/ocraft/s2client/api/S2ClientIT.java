@@ -32,6 +32,8 @@ import com.github.ocraft.s2client.protocol.request.Requests;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
+import java.util.concurrent.TimeUnit;
+
 import static com.github.ocraft.s2client.api.S2Client.starcraft2Client;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -67,7 +69,7 @@ class S2ClientIT {
         s2Client.responseStream().subscribe(testS2ClientSubscriber);
         s2Client.request(Requests.observation());
 
-        testS2ClientSubscriber.awaitTerminalEvent();
+        testS2ClientSubscriber.awaitDone(5, TimeUnit.SECONDS);
         testS2ClientSubscriber.assertError(ResponseParseException.class);
         assertThat(s2Client.isDone()).as("client status after response parse error").isFalse();
         gameServer.stop();

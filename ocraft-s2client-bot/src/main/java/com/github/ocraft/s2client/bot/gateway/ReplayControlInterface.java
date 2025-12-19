@@ -29,7 +29,7 @@ package com.github.ocraft.s2client.bot.gateway;
 import com.github.ocraft.s2client.bot.setting.InterfaceSettings;
 import com.github.ocraft.s2client.protocol.game.ReplayInfo;
 import com.github.ocraft.s2client.protocol.response.Response;
-import io.reactivex.Maybe;
+import io.reactivex.rxjava3.core.Maybe;
 
 import java.nio.file.Path;
 

@@ -38,7 +38,7 @@ import com.github.ocraft.s2client.protocol.game.MultiplayerOptions;
 import com.github.ocraft.s2client.protocol.response.Response;
 import com.github.ocraft.s2client.protocol.response.ResponseType;
 import com.github.ocraft.s2client.protocol.unit.Tag;
-import io.reactivex.Maybe;
+import io.reactivex.rxjava3.core.Maybe;
 
 import java.io.IOException;
 import java.nio.file.Path;

@@ -27,17 +27,18 @@ package com.github.ocraft.s2client.api.vertx;
  */
 
 import com.github.ocraft.s2client.api.Channel;
-import io.reactivex.Observable;
-import io.reactivex.subjects.PublishSubject;
-import io.reactivex.subjects.Subject;
-import io.vertx.reactivex.core.eventbus.EventBus;
-import io.vertx.reactivex.core.eventbus.Message;
-import io.vertx.reactivex.core.eventbus.MessageProducer;
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.subjects.PublishSubject;
+import io.reactivex.rxjava3.subjects.Subject;
+import io.vertx.rxjava3.core.eventbus.EventBus;
+import io.vertx.rxjava3.core.eventbus.Message;
+import io.vertx.rxjava3.core.eventbus.MessageProducer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.nio.BufferOverflowException;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.github.ocraft.s2client.api.OcraftApiConfig.*;
 import static com.github.ocraft.s2client.protocol.Preconditions.isSet;
@@ -56,6 +57,10 @@ public class VertxChannel implements Channel {
     private final MessageProducer<byte[]> outputMessageProducer;
     private volatile boolean connected;
     private Runnable onConnectionLost;
+    private final AtomicInteger pendingInputMessages = new AtomicInteger(0);
+    private final AtomicInteger pendingOutputMessages = new AtomicInteger(0);
+    private final int inputEventBusBufferSize;
+    private final int outputEventBusBufferSize;
 
     static VertxChannel from(EventBus eventBus) {
         return new VertxChannel(eventBus);
@@ -66,12 +71,13 @@ public class VertxChannel implements Channel {
         inputStream = initInputStream(eventBus);
 
         outputMessageProducer = eventBus
-                .<byte[]>publisher(OUTPUT_STREAM)
-                .setWriteQueueMaxSize(cfg().getInt(CLIENT_BUFFER_SIZE_RESPONSE_EVENT_BUS));
+                .<byte[]>publisher(OUTPUT_STREAM);
 
         inputMessageProducer = eventBus
-                .<byte[]>sender(INPUT_STREAM)
-                .setWriteQueueMaxSize(cfg().getInt(CLIENT_BUFFER_SIZE_REQUEST_EVENT_BUS));
+                .<byte[]>sender(INPUT_STREAM);
+
+        inputEventBusBufferSize = cfg().getInt(CLIENT_BUFFER_SIZE_REQUEST_EVENT_BUS);
+        outputEventBusBufferSize = cfg().getInt(CLIENT_BUFFER_SIZE_RESPONSE_EVENT_BUS);
     }
 
     private Observable<byte[]> initOutputStream(EventBus eventBus) {
@@ -90,20 +96,46 @@ public class VertxChannel implements Channel {
 
     @Override
     public void input(byte[] inputBytes) {
-        if (!inputMessageProducer.writeQueueFull()) {
-            inputMessageProducer.write(inputBytes);
-        } else {
-            throw new BufferOverflowException();
-        }
+        // Atomically check and increment to prevent race conditions
+        int currentPending;
+        do {
+            currentPending = pendingInputMessages.get();
+            if (currentPending >= inputEventBusBufferSize) {
+                throw new BufferOverflowException();
+            }
+        } while (!pendingInputMessages.compareAndSet(currentPending, currentPending + 1));
+
+        // Write asynchronously and decrement counter when done
+        inputMessageProducer.rxWrite(inputBytes)
+                .subscribe(
+                        () -> pendingInputMessages.decrementAndGet(),
+                        error -> {
+                            log.error("Error writing input message", error);
+                            pendingInputMessages.decrementAndGet();
+                        }
+                );
     }
 
     @Override
     public void output(byte[] outputBytes) {
-        if (!outputMessageProducer.writeQueueFull()) {
-            outputMessageProducer.write(outputBytes);
-        } else {
-            throw new BufferOverflowException();
-        }
+        // Atomically check and increment to prevent race conditions
+        int currentPending;
+        do {
+            currentPending = pendingOutputMessages.get();
+            if (currentPending >= outputEventBusBufferSize) {
+                throw new BufferOverflowException();
+            }
+        } while (!pendingOutputMessages.compareAndSet(currentPending, currentPending + 1));
+
+        // Write asynchronously and decrement counter when done
+        outputMessageProducer.rxWrite(outputBytes)
+                .subscribe(
+                        () -> pendingOutputMessages.decrementAndGet(),
+                        error -> {
+                            log.error("Error writing output message", error);
+                            pendingOutputMessages.decrementAndGet();
+                        }
+                );
     }
 
     @Override

@@ -37,7 +37,7 @@ import org.junit.jupiter.api.Test;
 import java.nio.file.Paths;
 import java.util.concurrent.TimeUnit;
 
-import static com.jayway.awaitility.Awaitility.await;
+import static org.awaitility.Awaitility.await;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Tag("endtoend")

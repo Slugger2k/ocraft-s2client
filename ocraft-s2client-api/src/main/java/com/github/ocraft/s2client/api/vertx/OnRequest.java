@@ -27,8 +27,8 @@ package com.github.ocraft.s2client.api.vertx;
  */
 
 import com.github.ocraft.s2client.api.OcraftApiConfig;
-import io.reactivex.observers.DefaultObserver;
-import io.vertx.reactivex.core.http.WebSocket;
+import io.reactivex.rxjava3.observers.DisposableObserver;
+import io.vertx.rxjava3.core.http.WebSocket;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,7 +41,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static com.github.ocraft.s2client.api.OcraftApiConfig.cfg;
 import static com.github.ocraft.s2client.protocol.Preconditions.isSet;
 
-class OnRequest extends DefaultObserver<byte[]> implements ConnectionHandler {
+class OnRequest extends DisposableObserver<byte[]> implements ConnectionHandler {
 
     private final int requestQueueMaxSize = cfg().getInt(OcraftApiConfig.CLIENT_BUFFER_SIZE_REQUEST_QUEUE);
 
@@ -76,7 +76,7 @@ class OnRequest extends DefaultObserver<byte[]> implements ConnectionHandler {
     public void onNext(byte[] msg) {
         log.debug("input stream: received message");
         if (counter.incrementAndGet() > requestQueueMaxSize) {
-            cancel();
+            dispose();
             onError(new BufferOverflowException());
             return;
         }

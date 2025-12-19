@@ -32,7 +32,7 @@ import com.github.ocraft.s2client.protocol.game.GameStatus;
 import com.github.ocraft.s2client.protocol.request.Request;
 import com.github.ocraft.s2client.protocol.response.Response;
 import com.github.ocraft.s2client.protocol.response.ResponseType;
-import io.reactivex.Maybe;
+import io.reactivex.rxjava3.core.Maybe;
 
 import java.util.Map;
 import java.util.Optional;

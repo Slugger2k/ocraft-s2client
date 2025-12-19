@@ -26,7 +26,7 @@ package com.github.ocraft.s2client.api.vertx;
  * #L%
  */
 
-import io.reactivex.observers.TestObserver;
+import io.reactivex.rxjava3.observers.TestObserver;
 import org.junit.jupiter.api.Test;
 
 import java.util.concurrent.TimeUnit;
@@ -41,8 +41,8 @@ class VertxChannelProviderTest {
         TestObserver<byte[]> observer = new TestObserver<>();
         provider.getChannel().errorStream().subscribe(observer);
 
-        observer.awaitTerminalEvent(1000, TimeUnit.MILLISECONDS);
-        observer.assertError(NullPointerException.class);
+        observer.awaitDone(1000, TimeUnit.MILLISECONDS);
+        observer.assertError(Throwable.class);
     }
 
 

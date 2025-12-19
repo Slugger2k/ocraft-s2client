@@ -30,7 +30,7 @@ import com.github.ocraft.s2client.api.Channel;
 import com.github.ocraft.s2client.api.ChannelProvider;
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.json.JsonObject;
-import io.vertx.reactivex.core.Vertx;
+import io.vertx.rxjava3.core.Vertx;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

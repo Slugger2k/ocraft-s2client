@@ -38,7 +38,7 @@ import com.github.ocraft.s2client.protocol.game.*;
 import com.github.ocraft.s2client.protocol.response.Response;
 import com.github.ocraft.s2client.protocol.response.ResponseType;
 import com.github.ocraft.s2client.protocol.spatial.SpatialCameraSetup;
-import io.reactivex.Maybe;
+import io.reactivex.rxjava3.core.Maybe;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import picocli.CommandLine;

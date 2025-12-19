@@ -30,7 +30,7 @@ import com.github.ocraft.s2client.protocol.game.GameStatus;
 import com.github.ocraft.s2client.protocol.response.Response;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
-import io.reactivex.subscribers.DefaultSubscriber;
+import io.reactivex.rxjava3.subscribers.DisposableSubscriber;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,7 +52,7 @@ import static com.github.ocraft.s2client.api.OcraftApiConfig.*;
 import static com.github.ocraft.s2client.protocol.Preconditions.isSet;
 import static java.lang.String.format;
 
-public class S2Controller extends DefaultSubscriber<Response> {
+public class S2Controller extends DisposableSubscriber<Response> {
 
     private static Logger log = LoggerFactory.getLogger(S2Controller.class);
 

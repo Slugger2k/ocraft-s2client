@@ -30,9 +30,9 @@ import com.github.ocraft.s2client.bot.GameServerResponses;
 import com.github.ocraft.s2client.protocol.response.Response;
 import com.github.ocraft.s2client.protocol.response.ResponsePing;
 import com.github.ocraft.s2client.protocol.response.ResponseType;
-import io.reactivex.Observable;
-import io.reactivex.schedulers.TestScheduler;
-import io.reactivex.subjects.MaybeSubject;
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.schedulers.TestScheduler;
+import io.reactivex.rxjava3.subjects.MaybeSubject;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collections;

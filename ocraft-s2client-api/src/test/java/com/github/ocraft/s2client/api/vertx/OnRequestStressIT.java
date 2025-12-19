@@ -28,11 +28,13 @@ package com.github.ocraft.s2client.api.vertx;
 
 import com.github.ocraft.s2client.api.OcraftApiConfig;
 import com.github.ocraft.s2client.test.MultiThreadedStressTester;
-import io.vertx.reactivex.core.http.WebSocket;
+import io.vertx.rxjava3.core.http.WebSocket;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+
+import io.vertx.core.Future;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -92,7 +94,8 @@ class OnRequestStressIT {
     private WebSocket webSocket() {
         WebSocket mock = mock(WebSocket.class);
         io.vertx.core.http.WebSocket webSocket = mock(io.vertx.core.http.WebSocket.class);
-        when(webSocket.writeBinaryMessage(any())).thenReturn(webSocket);
+        Future<Void> future = Future.succeededFuture();
+        when(webSocket.writeBinaryMessage(any())).thenReturn(future);
 
         when(mock.getDelegate()).thenReturn(webSocket);
         return mock;

@@ -30,9 +30,9 @@ import com.github.ocraft.s2client.protocol.RequestSerializer;
 import com.github.ocraft.s2client.protocol.ResponseParser;
 import com.github.ocraft.s2client.protocol.response.Response;
 import com.github.ocraft.s2client.protocol.response.ResponsePing;
-import io.reactivex.observers.DefaultObserver;
-import io.vertx.reactivex.core.buffer.Buffer;
-import io.vertx.reactivex.core.http.WebSocket;
+import io.reactivex.rxjava3.observers.DisposableObserver;
+import io.vertx.rxjava3.core.buffer.Buffer;
+import io.vertx.rxjava3.core.http.WebSocket;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,7 +40,7 @@ import static com.github.ocraft.s2client.protocol.Versions.API_VERSION;
 import static com.github.ocraft.s2client.protocol.request.Requests.ping;
 import static java.lang.String.format;
 
-class Ping extends DefaultObserver<Buffer> {
+class Ping extends DisposableObserver<Buffer> {
 
     private final Logger log = LoggerFactory.getLogger(Ping.class);
 
@@ -52,12 +52,6 @@ class Ping extends DefaultObserver<Buffer> {
         this.channel = channel;
         this.webSocket = webSocket;
         this.onConnectionVerified = onConnectionVerified;
-    }
-
-    @Override
-    public void onStart() {
-        webSocket.getDelegate().writeBinaryMessage(
-                io.vertx.core.buffer.Buffer.buffer(new RequestSerializer().apply(ping())));
     }
 
     @Override
@@ -83,10 +77,10 @@ class Ping extends DefaultObserver<Buffer> {
             if (!API_VERSION.equals(gameVersion)) {
                 log.warn("Ocraft uses sc2api in version {}. The game server uses {}.", API_VERSION, gameVersion);
             }
-            cancel();
+            dispose();
             onConnectionVerified.run();
         } catch (Exception e) {
-            cancel();
+            dispose();
             onError(e);
         }
     }

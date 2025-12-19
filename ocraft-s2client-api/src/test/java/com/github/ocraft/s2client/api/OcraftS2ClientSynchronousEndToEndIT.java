@@ -43,7 +43,7 @@ import static com.github.ocraft.s2client.api.controller.S2Controller.starcraft2G
 import static com.github.ocraft.s2client.protocol.Preconditions.isSet;
 import static com.github.ocraft.s2client.protocol.request.Requests.joinGame;
 import static com.github.ocraft.s2client.protocol.request.Requests.ping;
-import static com.jayway.awaitility.Awaitility.await;
+import static org.awaitility.Awaitility.await;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
@@ -126,6 +126,7 @@ class OcraftS2ClientSynchronousEndToEndIT {
         await().atMost(CONNECTION_TIMEOUT_IN_SECONDS, TimeUnit.SECONDS).until(() -> {
             try {
                 client.untilReady();
+                return true;
             } catch (TimeoutException e) {
                 throw new AssertionError(e);
             }

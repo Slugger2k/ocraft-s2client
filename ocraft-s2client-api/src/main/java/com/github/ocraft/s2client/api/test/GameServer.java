@@ -29,7 +29,7 @@ package com.github.ocraft.s2client.api.test;
 import SC2APIProtocol.Sc2Api;
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.json.JsonObject;
-import io.vertx.reactivex.core.Vertx;
+import io.vertx.rxjava3.core.Vertx;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -110,7 +110,12 @@ public class GameServer {
         if (isSet(vertx)) {
             try {
                 final CountDownLatch wait = new CountDownLatch(1);
-                vertx.close(voidAsyncResult -> wait.countDown());
+                vertx.close().subscribe(
+                        () -> wait.countDown(),
+                        error -> {
+                            log.error("Error closing Vertx", error);
+                            wait.countDown();
+                        });
                 vertx = null;
                 return wait.await(TIMEOUT_MS, TimeUnit.MILLISECONDS);
             } catch (InterruptedException e) {

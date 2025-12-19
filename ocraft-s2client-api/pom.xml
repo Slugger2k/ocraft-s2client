@@ -3,7 +3,7 @@
     <parent>
         <artifactId>ocraft-s2client</artifactId>
         <groupId>com.github.ocraft</groupId>
-        <version>0.4.22-SNAPSHOT</version>
+        <version>0.4.25-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -47,7 +47,7 @@
         </dependency>
         <dependency>
             <groupId>io.vertx</groupId>
-            <artifactId>vertx-rx-java2</artifactId>
+            <artifactId>vertx-rx-java3</artifactId>
         </dependency>
         <dependency>
             <groupId>org.javassist</groupId>
@@ -92,7 +92,7 @@
             <artifactId>assertj-core</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.jayway.awaitility</groupId>
+            <groupId>org.awaitility</groupId>
             <artifactId>awaitility</artifactId>
         </dependency>
     </dependencies>

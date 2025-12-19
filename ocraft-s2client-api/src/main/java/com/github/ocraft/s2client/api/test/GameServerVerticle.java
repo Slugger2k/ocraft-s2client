@@ -27,11 +27,11 @@ package com.github.ocraft.s2client.api.test;
  */
 
 import SC2APIProtocol.Sc2Api;
+import io.vertx.rxjava3.core.AbstractVerticle;
+import io.vertx.rxjava3.core.buffer.Buffer;
+import io.vertx.rxjava3.core.http.HttpServer;
+import io.vertx.rxjava3.core.http.ServerWebSocket;
 import io.vertx.core.Handler;
-import io.vertx.reactivex.core.AbstractVerticle;
-import io.vertx.reactivex.core.buffer.Buffer;
-import io.vertx.reactivex.core.http.HttpServer;
-import io.vertx.reactivex.core.http.ServerWebSocket;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,13 +51,14 @@ class GameServerVerticle extends AbstractVerticle {
 
     @Override
     public void start() {
-        httpServer = vertx.createHttpServer()
-                .websocketHandler(onMessage())
-                .listen(config().getInteger(CFG_PORT));
-    }
-
-    private Handler<ServerWebSocket> onMessage() {
-        return serverWebSocket -> serverWebSocket.handler(handleConnection(serverWebSocket));
+        io.vertx.core.http.HttpServer coreHttpServer = getVertx().createHttpServer();
+        httpServer = io.vertx.rxjava3.core.http.HttpServer.newInstance(coreHttpServer);
+        httpServer.webSocketHandler(serverWebSocket -> {
+            serverWebSocket.toObservable()
+                .subscribe(buffer -> handleConnection(serverWebSocket).handle(buffer));
+        });
+        httpServer.rxListen(config().getInteger(CFG_PORT))
+            .blockingGet();
     }
 
     private Handler<Buffer> handleConnection(ServerWebSocket serverWebSocket) {

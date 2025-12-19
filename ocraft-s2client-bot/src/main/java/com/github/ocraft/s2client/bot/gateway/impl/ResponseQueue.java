@@ -28,8 +28,8 @@ package com.github.ocraft.s2client.bot.gateway.impl;
 
 import com.github.ocraft.s2client.protocol.response.Response;
 import com.github.ocraft.s2client.protocol.response.ResponseType;
-import io.reactivex.Maybe;
-import io.reactivex.subjects.MaybeSubject;
+import io.reactivex.rxjava3.core.Maybe;
+import io.reactivex.rxjava3.subjects.MaybeSubject;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

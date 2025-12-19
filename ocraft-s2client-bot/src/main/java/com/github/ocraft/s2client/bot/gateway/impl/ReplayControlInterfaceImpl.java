@@ -36,7 +36,7 @@ import com.github.ocraft.s2client.protocol.request.RequestStartReplay;
 import com.github.ocraft.s2client.protocol.response.Response;
 import com.github.ocraft.s2client.protocol.response.ResponseReplayInfo;
 import com.github.ocraft.s2client.protocol.response.ResponseStartReplay;
-import io.reactivex.Maybe;
+import io.reactivex.rxjava3.core.Maybe;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

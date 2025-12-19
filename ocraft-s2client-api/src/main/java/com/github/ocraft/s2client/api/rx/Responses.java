@@ -28,7 +28,7 @@ package com.github.ocraft.s2client.api.rx;
 
 import com.github.ocraft.s2client.protocol.response.Response;
 import com.github.ocraft.s2client.protocol.response.ResponseType;
-import io.reactivex.functions.Predicate;
+import io.reactivex.rxjava3.functions.Predicate;
 
 public final class Responses {
 

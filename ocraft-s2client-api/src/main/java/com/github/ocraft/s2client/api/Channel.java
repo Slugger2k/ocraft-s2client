@@ -26,7 +26,7 @@ package com.github.ocraft.s2client.api;
  * #L%
  */
 
-import io.reactivex.Observable;
+import io.reactivex.rxjava3.core.Observable;
 
 public interface Channel {
     void input(byte[] inputBytes);

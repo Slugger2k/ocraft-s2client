@@ -58,7 +58,7 @@ import com.github.ocraft.s2client.protocol.unit.Unit;
 import com.github.ocraft.s2client.test.TemporaryFolder;
 import com.github.ocraft.s2client.test.TemporaryFolderExtension;
 import com.typesafe.config.ConfigFactory;
-import io.reactivex.Maybe;
+import io.reactivex.rxjava3.core.Maybe;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 

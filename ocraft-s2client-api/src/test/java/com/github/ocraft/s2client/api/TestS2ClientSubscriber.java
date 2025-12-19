@@ -27,7 +27,7 @@ package com.github.ocraft.s2client.api;
  */
 
 import com.github.ocraft.s2client.protocol.response.Response;
-import io.reactivex.subscribers.TestSubscriber;
+import io.reactivex.rxjava3.subscribers.TestSubscriber;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,12 +62,12 @@ class TestS2ClientSubscriber extends TestSubscriber<Response> {
     void hasReceivedResponse() {
         waitFor(ONLY_ONE);
         assertNoErrors();
-        assertThat(valueCount()).as("response list is not empty").isGreaterThan(0);
+        assertThat(values().size()).as("response list is not empty").isGreaterThan(0);
     }
 
     private void waitFor(int count) {
-        awaitCount(count, () -> {
-        }, WAITING_TIMEOUT_IN_MILLIS);
+        awaitCount(count);
+        awaitDone(WAITING_TIMEOUT_IN_MILLIS, TimeUnit.MILLISECONDS);
     }
 
     <T extends Response> T hasReceivedResponseOfType(Class<T> type) {
@@ -90,7 +90,7 @@ class TestS2ClientSubscriber extends TestSubscriber<Response> {
     }
 
     void isCompleted() {
-        awaitTerminalEvent(WAITING_TIMEOUT_IN_MILLIS, TimeUnit.MILLISECONDS);
+        awaitDone(WAITING_TIMEOUT_IN_MILLIS, TimeUnit.MILLISECONDS);
         assertComplete();
     }
 
@@ -119,7 +119,7 @@ class TestS2ClientSubscriber extends TestSubscriber<Response> {
 
     void eventuallyReceivedExactly(int valueCount) {
         waitFor(valueCount);
-        assertThat(this.valueCount()).isEqualTo(valueCount);
+        assertThat(this.values().size()).isEqualTo(valueCount);
     }
 
     void cancelAfter(int timeoutInMillis) {

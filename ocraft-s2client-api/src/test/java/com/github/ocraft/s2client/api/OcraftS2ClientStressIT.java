@@ -29,7 +29,7 @@ package com.github.ocraft.s2client.api;
 import com.github.ocraft.s2client.api.test.GameServer;
 import com.github.ocraft.s2client.test.MultiThreadedStressTester;
 import com.github.ocraft.s2client.test.Threads;
-import io.reactivex.exceptions.MissingBackpressureException;
+import io.reactivex.rxjava3.exceptions.MissingBackpressureException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
@@ -47,7 +47,7 @@ import static com.github.ocraft.s2client.api.S2Client.starcraft2Client;
 import static com.github.ocraft.s2client.protocol.Preconditions.isSet;
 import static com.github.ocraft.s2client.protocol.request.Requests.ping;
 import static com.github.ocraft.s2client.test.Threads.delay;
-import static com.jayway.awaitility.Awaitility.await;
+import static org.awaitility.Awaitility.await;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.hamcrest.core.IsEqual.equalTo;
@@ -163,7 +163,7 @@ class OcraftS2ClientStressIT {
 
     private <T extends Throwable> void assertThatSubscriberReceivedError(
             TestS2ClientSubscriber subscriber, Class<T> error) {
-        subscriber.awaitTerminalEvent(CONNECTION_TIMEOUT_IN_SECONDS, TimeUnit.SECONDS);
+        subscriber.awaitDone(CONNECTION_TIMEOUT_IN_SECONDS, TimeUnit.SECONDS);
         subscriber.assertError(error);
         assertThat(client.isDone()).as("client stopped after error").isTrue();
     }

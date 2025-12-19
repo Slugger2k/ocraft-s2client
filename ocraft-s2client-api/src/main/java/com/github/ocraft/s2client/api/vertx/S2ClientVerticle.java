@@ -27,11 +27,11 @@ package com.github.ocraft.s2client.api.vertx;
  */
 
 import com.github.ocraft.s2client.api.OcraftApiConfig;
-import io.reactivex.Observable;
+import io.reactivex.rxjava3.core.Observable;
 import io.vertx.core.http.HttpClientOptions;
-import io.vertx.reactivex.core.AbstractVerticle;
-import io.vertx.reactivex.core.http.HttpClient;
-import io.vertx.reactivex.core.http.WebSocket;
+import io.vertx.rxjava3.core.AbstractVerticle;
+import io.vertx.rxjava3.core.http.HttpClient;
+import io.vertx.rxjava3.core.http.WebSocket;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -75,8 +75,9 @@ class S2ClientVerticle extends AbstractVerticle {
         httpClientOptions.setKeepAlive(true);
         httpClientOptions.setPipelining(true);
         httpClientOptions.setConnectTimeout(config().getInteger(CFG_CONNECT_TIMEOUT));
-        httpClientOptions.setMaxWebsocketFrameSize(MAX_WEBSOCKET_FRAME_SIZE_IN_BYTES);
-        httpClient = vertx.createHttpClient(httpClientOptions);
+        httpClientOptions.setMaxWebSocketFrameSize(MAX_WEBSOCKET_FRAME_SIZE_IN_BYTES);
+        io.vertx.core.http.HttpClient coreHttpClient = getVertx().createHttpClient(httpClientOptions);
+        httpClient = io.vertx.rxjava3.core.http.HttpClient.newInstance(coreHttpClient);
     }
 
     private void connect() {
@@ -89,8 +90,10 @@ class S2ClientVerticle extends AbstractVerticle {
     private Observable<WebSocket> connection() {
         return Observable.defer(() -> {
             if (!isSet(httpClient)) return Observable.empty();
+            String host = config().getString(CFG_IP);
+            int port = config().getInteger(CFG_PORT);
             return httpClient
-                    .websocketStream(config().getInteger(CFG_PORT), config().getString(CFG_IP), SC2API_URI)
+                    .webSocket(port, host, SC2API_URI)
                     .toObservable();
         });
     }

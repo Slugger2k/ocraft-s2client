@@ -26,7 +26,7 @@ package com.github.ocraft.s2client.api.vertx;
  * #L%
  */
 
-import io.vertx.reactivex.core.Vertx;
+import io.vertx.rxjava3.core.Vertx;
 
 class VertxFactory {
     private VertxFactory() {

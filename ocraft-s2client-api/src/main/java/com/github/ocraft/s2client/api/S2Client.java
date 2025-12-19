@@ -40,12 +40,12 @@ import com.github.ocraft.s2client.protocol.request.Request;
 import com.github.ocraft.s2client.protocol.response.Response;
 import com.github.ocraft.s2client.protocol.response.ResponseError;
 import com.github.ocraft.s2client.protocol.response.ResponseType;
-import io.reactivex.BackpressureStrategy;
-import io.reactivex.Flowable;
-import io.reactivex.Maybe;
-import io.reactivex.schedulers.Schedulers;
-import io.reactivex.subjects.MaybeSubject;
-import io.reactivex.subscribers.DefaultSubscriber;
+import io.reactivex.rxjava3.core.BackpressureStrategy;
+import io.reactivex.rxjava3.core.Flowable;
+import io.reactivex.rxjava3.core.Maybe;
+import io.reactivex.rxjava3.schedulers.Schedulers;
+import io.reactivex.rxjava3.subjects.MaybeSubject;
+import io.reactivex.rxjava3.subscribers.DisposableSubscriber;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,7 +59,7 @@ import static com.github.ocraft.s2client.protocol.Preconditions.isSet;
 import static com.github.ocraft.s2client.protocol.Preconditions.require;
 import static java.lang.String.format;
 
-public class S2Client extends DefaultSubscriber<Response> {
+public class S2Client extends DisposableSubscriber<Response> {
 
     private final Logger log = LoggerFactory.getLogger(S2Client.class);
 

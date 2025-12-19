@@ -40,7 +40,7 @@ import com.github.ocraft.s2client.protocol.request.Requests;
 import com.github.ocraft.s2client.protocol.response.Response;
 import com.github.ocraft.s2client.protocol.response.ResponsePing;
 import com.github.ocraft.s2client.protocol.response.ResponseType;
-import io.reactivex.Maybe;
+import io.reactivex.rxjava3.core.Maybe;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -27,8 +27,9 @@ package com.github.ocraft.s2client.api.vertx;
  */
 
 
-import io.reactivex.observers.DefaultObserver;
-import io.vertx.reactivex.core.http.WebSocket;
+import com.github.ocraft.s2client.protocol.RequestSerializer;
+import io.reactivex.rxjava3.observers.DisposableObserver;
+import io.vertx.rxjava3.core.http.WebSocket;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,9 +37,10 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import static com.github.ocraft.s2client.protocol.request.Requests.ping;
 import static java.util.Arrays.asList;
 
-class OnConnect extends DefaultObserver<WebSocket> implements ConnectionHandler {
+class OnConnect extends DisposableObserver<WebSocket> implements ConnectionHandler {
 
     private final Logger log = LoggerFactory.getLogger(OnConnect.class);
 
@@ -74,7 +76,15 @@ class OnConnect extends DefaultObserver<WebSocket> implements ConnectionHandler 
 
     @Override
     public void onConnected(WebSocket webSocket) {
-        webSocket.toObservable().subscribe(new Ping(channel, webSocket, () -> this.onConnectionVerified(webSocket)));
+        Ping pingObserver = new Ping(channel, webSocket, () -> this.onConnectionVerified(webSocket));
+        webSocket.toObservable()
+                .doOnSubscribe(d -> {
+                    // Send ping after subscription to ensure observer is ready to receive response
+                    webSocket.getDelegate().writeBinaryMessage(
+                            io.vertx.core.buffer.Buffer.buffer(
+                                    new RequestSerializer().apply(ping())));
+                })
+                .subscribe(pingObserver);
     }
 
     private void onConnectionVerified(WebSocket webSocket) {
@@ -88,7 +98,7 @@ class OnConnect extends DefaultObserver<WebSocket> implements ConnectionHandler 
             log.info("Connection lost.");
             channel.disconnected();
             connectionHandlers.forEach(ConnectionHandler::onConnectionLost);
-            cancel();
+            dispose();
             connect.run();
         }
     }
